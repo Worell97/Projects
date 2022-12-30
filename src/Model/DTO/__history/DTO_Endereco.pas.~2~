@@ -1,0 +1,46 @@
+unit DTO_Endereco;
+
+interface
+uses
+  System.Generics.Collections, FireDAC.Comp.Client, SysUtils;
+type
+  TDtoEndereco = class;
+  TDtoEnderecos = class;
+  TDtoEndereco = class(TObject)
+  private
+    Fidendereco: System.Integer;
+    Fidpessoa: System.Integer;
+    Fdscep: System.TDate;
+    { private declarations }
+    procedure InternalClear();
+  public
+    constructor Create();
+    procedure Clear; inline;
+  end;
+  TDtoEnderecos = class(TObjectList<TDtoEndereco>)
+  end;
+implementation
+{ TDtoEndereco }
+
+procedure TDtoEndereco.Clear;
+begin
+  Self.InternalClear();
+end;
+
+constructor TDtoEndereco.Create();
+begin
+  Self.InternalClear();
+end;
+
+
+procedure TDtoEndereco.InternalClear;
+begin
+  FidEndereco := 0;
+  Fnmprimeiro := '';
+  Fdtregistro := Now;
+  Fnmsegundo := '';
+  Fdsdocumento := '';
+  Fflnatureza := 0;
+end;
+
+end.

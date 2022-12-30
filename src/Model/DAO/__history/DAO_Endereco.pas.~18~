@@ -1,0 +1,193 @@
+unit DAO_Endereco;
+
+interface
+uses
+  System.SysUtils,
+  Data.DB,
+  DTO_Endereco,
+  FireDAC.Comp.Client,
+  FireDAC.Stan.Param;
+type
+  TDaoEndereco = class
+  strict private
+    const
+      Select: System.UnicodeString =
+          'SELECT ' +
+          '  idendereco,'+
+          '  idpessoa,'+
+          '  dscep '+
+          'FROM ' +
+          '  Endereco';
+
+      Insert: System.UnicodeString =
+          'INSERT INTO Endereco(' +
+          '  idendereco,'+
+          '  idpessoa,'+
+          '  dscep )'+
+          'VALUES('+
+          '  :idendereco,'+
+          '  :idpessoa,'+
+          '  :dscep )';
+
+      Update: System.UnicodeString =
+          'UPDATE ' +
+          ' endereco ' +
+          'SET ' +
+          '  idendereco = :idendereco, '+
+          '  idpessoa = :idpessoa, '+
+          '  dscep = :dscep '+
+          ' WHERE idendereco = :idendereco ';
+
+      Delete: System.UnicodeString =
+          'DELETE FROM endereco ' +
+          'WHERE ' +
+          '  idendereco = :idendereco';
+  private
+    FConnection: TFDConnection;
+    class procedure InternalLoad(var AQuery: TFDQuery; const AObject: TDtoEndereco); static;
+    class procedure InternalLoadAll(var AQuery: TFDQuery; const AObjectList: TDtoEnderecos); static;
+  public
+      constructor Create(AConnection: TFDConnection);
+      procedure UnsafeSave(const AObject: TDtoEndereco);
+      procedure Save(const AObject: TDtoEndereco);
+      function Load   (const AObject: TDtoEndereco; const AIdEndereco: System.Integer): Boolean;
+      function LoadAll   (const AObject: TDtoEnderecos): Boolean;
+      procedure UnSafeDelete (const ACodigo: System.Integer);
+      procedure SafeDelete (const ACodigo: System.Integer);
+  end;
+implementation
+  uses
+    System.TypInfo;
+{ TDaoEndereco }
+
+constructor TDaoEndereco.Create(AConnection: TFDConnection);
+begin
+  FConnection := AConnection;
+end;
+
+class procedure TDaoEndereco.InternalLoad(var AQuery: TFDQuery;const AObject: TDtoEndereco);
+begin
+  AObject.idendereco := AQuery.FieldByName('idendereco').AsInteger;
+  AObject.idpessoa := AQuery.FieldByName('idpessoa').AsInteger;
+  AObject.dscep := AQuery.FieldByName('dscep').AsString;
+end;
+
+class procedure TDaoEndereco.InternalLoadAll(var AQuery: TFDQuery;
+  const AObjectList: TDtoEnderecos);
+var
+  LDtoEndereco: TDtoEndereco;
+begin
+  LDtoEndereco := TDtoEndereco.Create;
+  AQuery.First;
+  try
+    while not(AQuery.Eof) do
+    begin
+      LDtoEndereco.idendereco := AQuery.FieldByName('idendereco').AsInteger;
+      LDtoEndereco.idpessoa := AQuery.FieldByName('idpessoa').AsInteger;
+      LDtoEndereco.dscep := AQuery.FieldByName('dscep').AsString;
+      AObjectList.Add(LDtoEndereco);
+      AQuery.Next;
+    end;
+  finally
+    LDtoEndereco.Free;
+  end;
+end;
+
+function TDaoEndereco.Load(const AObject: TDtoEndereco; const AIdEndereco: System.Integer): Boolean;
+const
+  CWhere =
+    ' WHERE ' +
+    '  idendereco = :idendereco';
+var
+  LQuery: TFDQuery;
+begin
+  Result := False;
+  if (AIdEndereco > 0) then
+  begin
+    LQuery := TFDQuery.Create(nil);
+    LQuery.Connection := FConnection;
+    LQuery.SQL.Add(Select+CWhere);
+    LQuery.ParamByName('idendereco').AsInteger := AIdEndereco;
+    LQuery.Open;
+    Result := not(LQuery.IsEmpty);
+    if not(LQuery.IsEmpty) then
+      InternalLoad(LQuery, AObject);
+  end;
+end;
+
+function TDaoEndereco.LoadAll(const AObject: TDtoEnderecos): Boolean;
+var
+  LQuery: TFDQuery;
+begin
+  Result := False;
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  LQuery.SQL.Add(Select);
+  LQuery.Open;
+  Result := not(LQuery.IsEmpty);
+  if not(LQuery.IsEmpty) then
+  begin
+    InternalLoadAll(LQuery, AObject);
+  end;
+end;
+
+procedure TDaoEndereco.SafeDelete(const ACodigo: System.Integer);
+begin
+  FConnection.StartTransaction;
+  try
+    UnSafeDelete(ACodigo);
+    FConnection.Commit;
+  except
+    FConnection.Rollback;
+    raise
+  end;
+end;
+
+procedure TDaoEndereco.Save(const AObject: TDtoEndereco);
+begin
+   FConnection.StartTransaction;
+   try
+      UnsafeSave(AObject);
+      FConnection.Commit;
+   except
+      FConnection.Rollback;
+      raise;
+   end;
+end;
+
+procedure TDaoEndereco.UnSafeDelete(const ACodigo: System.Integer);
+var
+  LQuery: TFDQuery;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  LQuery.SQL.Add(Delete);
+  LQuery.ParamByName('idedereco').AsInteger := ACodigo;
+  LQuery.ExecSQL;
+end;
+
+procedure TDaoEndereco.UnsafeSave(const AObject: TDtoEndereco);
+var
+  LQuery: TFDQuery;
+  LId: System.Integer;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  try
+    if (AObject.idendereco <= 0) then
+    begin
+      LQuery.SQL.Add(Insert);
+    end else
+    begin
+      LId := AObject.idEndereco;
+      LQuery.SQL.Add(Update);
+    end;
+    LQuery.ParamByName('idendereco').AsInteger := LId;
+    LQuery.ParamByName('idpessoa').AsInteger:= AObject.idpessoa;
+    LQuery.ParamByName('dscep').AsString:= AObject.dscep;
+    LQuery.ExecSQL;
+  finally
+    LQuery.Free;
+  end;
+end;
+end.

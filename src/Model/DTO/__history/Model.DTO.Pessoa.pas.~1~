@@ -1,0 +1,96 @@
+unit Model.DTO.Pessoa;
+
+interface
+uses
+  System.Generics.Collections, FireDAC.Comp.Client;
+type
+  TDtoCliente = class;
+  TDtoClientes = class;
+  TDtoCliente = class(TObject)
+  private
+    { private declarations }
+    FCodigo: System.Integer;
+    FNome: System.String;
+    FCidade: System.String;
+    FUf: System.String;
+    procedure InternalClear();
+    procedure SetCodigo(const ACodigo: System.Integer);
+    procedure SetNome(const ANome: System.String);
+    procedure SetCidade(const ACidade: System.String);
+    procedure SetUf(const AUf: System.String);
+    function GetCodigo(): System.Integer;
+    function GetNome(): System.String;
+    function GetCidade(): System.String;
+    function GetUf(): System.String;
+  public
+    constructor Create();
+    procedure Clear; inline;
+    property codigo: System.Integer read GetCodigo write SetCodigo;
+    property nome: System.String read GetNome write SetNome;
+    property cidade: System.String read GetCidade write SetCidade;
+    property uf: System.String read GetUf write SetUf;
+  end;
+  TDtoClientes = class(TObjectList<TDtoCliente>)
+  end;
+implementation
+{ TDtoCliente }
+
+procedure TDtoCliente.Clear;
+begin
+  Self.InternalClear();
+end;
+
+constructor TDtoCliente.Create();
+begin
+  Self.InternalClear();
+end;
+
+function TDtoCliente.GetCodigo: System.Integer;
+begin
+  Result := FCodigo;
+end;
+
+function TDtoCliente.GetNome: System.String;
+begin
+  Result := FNome;
+end;
+
+function TDtoCliente.GetCidade: System.String;
+begin
+  Result := FCidade;
+end;
+
+function TDtoCliente.GetUf: System.String;
+begin
+  Result := FUf;
+end;
+
+procedure TDtoCliente.InternalClear;
+begin
+  FCodigo := 0;
+  FNome := '';
+  FCidade := '';
+  FUf := '';
+end;
+
+procedure TDtoCliente.SetCodigo(const ACodigo: System.Integer);
+begin
+  FCodigo := ACodigo;
+end;
+
+procedure TDtoCliente.SetNome(const ANome: System.String);
+begin
+  FNome := ANome;
+end;
+
+procedure TDtoCliente.SetCidade(const ACidade: System.String);
+begin
+  FCidade :=ACidade;
+end;
+
+procedure TDtoCliente.SetUf(const AUf: System.String);
+begin
+  FUf := AUf;
+end;
+
+end.

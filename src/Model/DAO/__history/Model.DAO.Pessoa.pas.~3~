@@ -1,0 +1,32 @@
+unit Model.DAO.Pessoa;
+
+interface
+type
+        TModelDAO = class (TInterfacedObject, iModelDAO<T>)
+        private
+        public
+           constructor Create;
+           destructor Destroy; override;
+           class function New : iModelDAO<T>;
+        end;
+
+implementation
+
+{ TModelDAO }
+
+constructor TModelDAO.Create;
+begin
+
+end;
+
+destructor TModelDAO.Destroy;
+begin
+    inherited;
+end;
+
+class function TModelDAO.New: iModelDAO<T>;
+begin
+    Result := Self.Create;
+end;
+
+end.

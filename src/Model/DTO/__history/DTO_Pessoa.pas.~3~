@@ -1,0 +1,96 @@
+unit DTO_Pessoa;
+
+interface
+uses
+  System.Generics.Collections, FireDAC.Comp.Client;
+type
+  TDtoPessoa = class;
+  TDtoPessoas = class;
+  TDtoPessoa = class(TObject)
+  private
+    { private declarations }
+    FCodigo: System.Integer;
+    FNome: System.String;
+    FCidade: System.String;
+    FUf: System.String;
+    procedure InternalClear();
+    procedure SetCodigo(const ACodigo: System.Integer);
+    procedure SetNome(const ANome: System.String);
+    procedure SetCidade(const ACidade: System.String);
+    procedure SetUf(const AUf: System.String);
+    function GetCodigo(): System.Integer;
+    function GetNome(): System.String;
+    function GetCidade(): System.String;
+    function GetUf(): System.String;
+  public
+    constructor Create();
+    procedure Clear; inline;
+    property codigo: System.Integer read GetCodigo write SetCodigo;
+    property nome: System.String read GetNome write SetNome;
+    property cidade: System.String read GetCidade write SetCidade;
+    property uf: System.String read GetUf write SetUf;
+  end;
+  TDtoPessoas = class(TObjectList<TDtoPessoa>)
+  end;
+implementation
+{ TDtoPessoa }
+
+procedure TDtoPessoa.Clear;
+begin
+  Self.InternalClear();
+end;
+
+constructor TDtoPessoa.Create();
+begin
+  Self.InternalClear();
+end;
+
+function TDtoPessoa.GetCodigo: System.Integer;
+begin
+  Result := FCodigo;
+end;
+
+function TDtoPessoa.GetNome: System.String;
+begin
+  Result := FNome;
+end;
+
+function TDtoPessoa.GetCidade: System.String;
+begin
+  Result := FCidade;
+end;
+
+function TDtoPessoa.GetUf: System.String;
+begin
+  Result := FUf;
+end;
+
+procedure TDtoPessoa.InternalClear;
+begin
+  FCodigo := 0;
+  FNome := '';
+  FCidade := '';
+  FUf := '';
+end;
+
+procedure TDtoPessoa.SetCodigo(const ACodigo: System.Integer);
+begin
+  FCodigo := ACodigo;
+end;
+
+procedure TDtoPessoa.SetNome(const ANome: System.String);
+begin
+  FNome := ANome;
+end;
+
+procedure TDtoPessoa.SetCidade(const ACidade: System.String);
+begin
+  FCidade :=ACidade;
+end;
+
+procedure TDtoPessoa.SetUf(const AUf: System.String);
+begin
+  FUf := AUf;
+end;
+
+end.

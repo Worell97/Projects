@@ -1,0 +1,26 @@
+unit Model.DAO.Pessoa;
+
+interface
+type
+        TModelDAO = class (T)
+        private
+        public
+           constructor Create;
+           destructor Destroy; override;
+        end;
+
+implementation
+
+{ TModelDAO }
+
+constructor TModelDAO.Create;
+begin
+
+end;
+
+destructor TModelDAO.Destroy;
+begin
+    inherited;
+end;
+
+end.

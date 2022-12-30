@@ -1,0 +1,205 @@
+unit DAO_Pessoa;
+
+interface
+uses
+  System.SysUtils,
+  Data.DB,
+  DTO_Pessoa,
+  DAO_Endereco,
+  DTO_Endereco,
+  FireDAC.Comp.Client,
+  FireDAC.Stan.Param,
+  FireDAC.DApt;
+type
+  TDaoPessoa = class
+  strict private
+    const
+      Select: System.UnicodeString =
+          'SELECT ' +
+          '  p.idpessoa,'+
+          '  p.flnatureza,'+
+          '  p.dsdocumento,'+
+          '  p.nmprimeiro, '+
+          '  p.nmsegundo, '+
+          '  p.dtregistro, '+
+          '  e.dscep '+
+          ' FROM ' +
+          '  pessoa p'+
+          ' INNER JOIN endereco e on '+
+          '   e.idpessoa = p.idpessoa ';
+
+      Insert: System.UnicodeString =
+          'INSERT INTO pessoa(' +
+          '  flnatureza,'+
+          '  dsdocumento,'+
+          '  nmprimeiro, '+
+          '  nmsegundo, '+
+          '  dtregistro )'+
+          'VALUES('+
+          '  :flnatureza,'+
+          '  :dsdocumento,'+
+          '  :nmprimeiro, '+
+          '  :nmsegundo, '+
+          '  :dtregistro )'+
+          ' RETURNING idpessoa ';
+
+      Update: System.UnicodeString =
+          'UPDATE ' +
+          ' pessoa ' +
+          'SET ' +
+          '  flnatureza = :flnatureza, '+
+          '  dsdocumento = :dsdocumento, '+
+          '  nmprimeiro = :nmprimeiro, '+
+          '  nmsegundo = :nmsegundo, '+
+          '  dtregistro = :dtregistro '+
+          ' WHERE idpessoa = :idpessoa ';
+
+      Delete: System.UnicodeString =
+          'DELETE FROM pessoa ' +
+          'WHERE ' +
+          '  idpessoa = :idpessoa';
+  private
+    FConnection: TFDConnection;
+    class procedure InternalLoad(var AQuery: TFDQuery; const AObject: TDtoPessoa); static;
+  public
+      constructor Create(AConnection: TFDConnection);
+      procedure UnsafeSave(const AObject: TDtoPessoa);
+      procedure GravarEndereco(const AIdPessoa: System.Integer; const ACep: System.String);
+      procedure Save(const AObject: TDtoPessoa);
+      function Load   (const AObject: TDtoPessoa; const AIdPessoa: System.Integer): Boolean;
+      procedure UnSafeDelete (const ACodigo: System.Integer);
+      procedure SafeDelete (const ACodigo: System.Integer);
+  end;
+implementation
+  uses
+    System.TypInfo;
+{ TDaoPessoa }
+
+constructor TDaoPessoa.Create(AConnection: TFDConnection);
+begin
+  FConnection := AConnection;
+end;
+
+procedure TDaoPessoa.GravarEndereco(const AIdPessoa: System.Integer;
+  const ACep: System.String);
+var
+  LDaoEndereco: TDaoEndereco;
+  LDtoEndereco: TDtoEndereco;
+begin
+  LDaoEndereco := TDaoEndereco.Create(FConnection);
+  LDtoEndereco := TDtoEndereco.Create;
+  try
+    LDaoEndereco.LoadByPerson(LDtoEndereco, AIdPessoa);
+    LDtoEndereco.dscep := ACep;
+    LDaoEndereco.Save(LDtoEndereco);
+  finally
+    LDaoEndereco.Free;
+    LDtoEndereco.Free;
+  end;
+end;
+
+class procedure TDaoPessoa.InternalLoad(var AQuery: TFDQuery;const AObject: TDtoPessoa);
+begin
+  AObject.idpessoa := AQuery.FieldByName('idpessoa').AsInteger;
+  AObject.flnatureza := AQuery.FieldByName('flnatureza').AsInteger;
+  AObject.nmprimeiro := AQuery.FieldByName('nmprimeiro').AsString;
+  AObject.nmsegundo := AQuery.FieldByName('nmsegundo').AsString;
+  AObject.dsdocumento := AQuery.FieldByName('dsdocumento').AsString;
+  AObject.dtregistro := AQuery.FieldByName('dtregistro').AsDateTime;
+  AObject.dscep := AQuery.FieldByName('dscep').AsString;
+end;
+
+function TDaoPessoa.Load(const AObject: TDtoPessoa; const AIdPessoa: System.Integer): Boolean;
+const
+  CWhere =
+    ' WHERE ' +
+    '  p.idpessoa = :idpessoa';
+var
+  LQuery: TFDQuery;
+begin
+  Result := False;
+  if (AIdPessoa > 0) then
+  begin
+    LQuery := TFDQuery.Create(nil);
+    LQuery.Connection := FConnection;
+    LQuery.SQL.Add(Select+CWhere);
+    LQuery.ParamByName('idpessoa').AsInteger := AIdPessoa;
+    LQuery.Open;
+    Result := not(LQuery.IsEmpty);
+    if not(LQuery.IsEmpty) then
+      InternalLoad(LQuery, AObject);
+  end;
+end;
+
+procedure TDaoPessoa.SafeDelete(const ACodigo: System.Integer);
+begin
+  FConnection.StartTransaction;
+  try
+    UnSafeDelete(ACodigo);
+    FConnection.Commit;
+  except
+    FConnection.Rollback;
+    raise
+  end;
+end;
+
+procedure TDaoPessoa.Save(const AObject: TDtoPessoa);
+begin
+   FConnection.StartTransaction;
+   try
+      UnsafeSave(AObject);
+      FConnection.Commit;
+   except
+      FConnection.Rollback;
+      raise;
+   end;
+end;
+
+procedure TDaoPessoa.UnSafeDelete(const ACodigo: System.Integer);
+var
+  LQuery: TFDQuery;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  LQuery.SQL.Add(Delete);
+  LQuery.ParamByName('idpessoa').AsInteger := ACodigo;
+  LQuery.ExecSQL;
+end;
+
+procedure TDaoPessoa.UnsafeSave(const AObject: TDtoPessoa);
+var
+  LQuery: TFDQuery;
+  LId: System.Integer;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  try
+    if (AObject.idpessoa <= 0) then
+    begin
+      LQuery.SQL.Add(Insert);
+    end else
+    begin
+      LId := AObject.idpessoa;
+      LQuery.SQL.Add(Update);
+      LQuery.ParamByName('idpessoa').AsInteger := LId;
+    end;
+    LQuery.ParamByName('flnatureza').AsInteger:= AObject.flnatureza;
+    LQuery.ParamByName('nmprimeiro').AsString:= AObject.nmprimeiro;
+    LQuery.ParamByName('nmsegundo').AsString:= AObject.nmsegundo;
+    LQuery.ParamByName('dsdocumento').AsString:= AObject.dsdocumento;
+    LQuery.ParamByName('dtregistro').AsDate:= AObject.dtregistro;
+
+    if (AObject.idpessoa <= 0) then
+    begin
+      LQuery.OpenOrExecute;
+      GravarEndereco(LQuery.FieldByName('idpessoa').AsInteger, AObject.dscep);
+    end else
+    begin
+      LQuery.ExecSql;
+      GravarEndereco(AObject.idpessoa, AObject.dscep);
+    end;
+  finally
+    LQuery.Free;
+  end;
+end;
+end.

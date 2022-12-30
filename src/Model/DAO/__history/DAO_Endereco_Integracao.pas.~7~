@@ -1,0 +1,172 @@
+unit DAO_Endereco_Integracao;
+
+interface
+uses
+  System.SysUtils,
+  Data.DB,
+  DTO_Endereco_Integracao,
+  FireDAC.Comp.Client,
+  FireDAC.Stan.Param;
+type
+  TDaoEnderecoIntegracao = class
+  strict private
+    const
+      Select: System.UnicodeString =
+          'SELECT ' +
+          '  idendereco,'+
+          '  dsuf,'+
+          '  nmcidade,'+
+          '  nmbairro, '+
+          '  nmlogradouro, '+
+          '  dscomplemento '+
+          'FROM ' +
+          '  endereco_integracao';
+
+      Insert: System.UnicodeString =
+          'INSERT INTO endereco_integracao(' +
+          '  idendereco,'+
+          '  dsuf,'+
+          '  nmcidade,'+
+          '  nmbairro, '+
+          '  nmlogradouro, '+
+          '  dscomplemento )'+
+          'VALUES('+
+          '  :idendereco,'+
+          '  :dsuf,'+
+          '  :nmcidade, '+
+          '  :nmbairro, '+
+          '  :nmlogradouro, '+
+          '  :dscomplemento )';
+
+      Update: System.UnicodeString =
+          'UPDATE ' +
+          ' endereco_integracao ' +
+          'SET ' +
+          '  idendereco = :idendereco, '+
+          '  dsuf = :dsuf, '+
+          '  nmcidade = :nmcidade, '+
+          '  nmbairro = :nmbairro, '+
+          '  nmlogradouro = :nmlogradouro, '+
+          '  dscomplemento = :dscomplemento '+
+          ' WHERE idendereco = :idendereco ';
+
+      Delete: System.UnicodeString =
+          'DELETE FROM endereco_integracao ' +
+          'WHERE ' +
+          '  idendereco = :idendereco';
+  private
+    FConnection: TFDConnection;
+    class procedure InternalLoad(var AQuery: TFDQuery; const AObject: TDtoEnderecoIntegracao); static;
+  public
+      constructor Create(AConnection: TFDConnection);
+      procedure UnsafeSave(const AObject: TDtoEnderecoIntegracao);
+      procedure Save(const AObject: TDtoEnderecoIntegracao);
+      function Load   (const AObject: TDtoEnderecoIntegracao; const AIdEndereco: System.Integer): Boolean;
+      procedure UnSafeDelete (const ACodigo: System.Integer);
+      procedure SafeDelete (const ACodigo: System.Integer);
+  end;
+implementation
+  uses
+    System.TypInfo;
+{ TDaoEnderecoIntegracao }
+
+constructor TDaoEnderecoIntegracao.Create(AConnection: TFDConnection);
+begin
+  FConnection := AConnection;
+end;
+
+class procedure TDaoEnderecoIntegracao.InternalLoad(var AQuery: TFDQuery;const AObject: TDtoEnderecoIntegracao);
+begin
+  AObject.idendereco := AQuery.FieldByName('idendereco').AsInteger;
+  AObject.flnatureza := AQuery.FieldByName('flnatureza').AsInteger;
+  AObject.nmprimeiro := AQuery.FieldByName('nmprimeiro').AsString;
+  AObject.nmsegundo := AQuery.FieldByName('nmsegundo').AsString;
+  AObject.dsdocumento := AQuery.FieldByName('dsdocumento').AsString;
+  AObject.dtregistro := AQuery.FieldByName('dtregistro').AsInteger;
+end;
+
+function TDaoEnderecoIntegracao.Load(const AObject: TDtoEnderecoIntegracao; const AIdEndereco: System.Integer): Boolean;
+const
+  CWhere =
+    ' WHERE ' +
+    '  idenderecointegracao = :idenderecointegracao';
+var
+  LQuery: TFDQuery;
+begin
+  Result := False;
+  if (AIdEndereco > 0) then
+  begin
+    LQuery := TFDQuery.Create(nil);
+    LQuery.Connection := FConnection;
+    LQuery.SQL.Add(Select+CWhere);
+    LQuery.ParamByName('idenderecointegracao').AsInteger := AIdEnderecoIntegracao;
+    LQuery.Open;
+    Result := not(LQuery.IsEmpty);
+    if not(LQuery.IsEmpty) then
+      InternalLoad(LQuery, AObject);
+  end;
+end;
+
+procedure TDaoEnderecoIntegracao.SafeDelete(const ACodigo: System.Integer);
+begin
+  FConnection.StartTransaction;
+  try
+    UnSafeDelete(ACodigo);
+    FConnection.Commit;
+  except
+    FConnection.Rollback;
+    raise
+  end;
+end;
+
+procedure TDaoEnderecoIntegracao.Save(const AObject: TDtoEnderecoIntegracao);
+begin
+   FConnection.StartTransaction;
+   try
+      UnsafeSave(AObject);
+      FConnection.Commit;
+   except
+      FConnection.Rollback;
+      raise;
+   end;
+end;
+
+procedure TDaoEnderecoIntegracao.UnSafeDelete(const ACodigo: System.Integer);
+var
+  LQuery: TFDQuery;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  LQuery.SQL.Add(Delete);
+  LQuery.ParamByName('idenderecointegracao').AsInteger := ACodigo;
+  LQuery.ExecSQL;
+end;
+
+procedure TDaoEnderecoIntegracao.UnsafeSave(const AObject: TDtoEnderecoIntegracao);
+var
+  LQuery: TFDQuery;
+  LId: System.Integer;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  try
+    if (AObject.idenderecointegracao <= 0) then
+    begin
+      LQuery.SQL.Add(Insert);
+    end else
+    begin
+      LId := AObject.idenderecointegracao;
+      LQuery.SQL.Add(Update);
+    end;
+    LQuery.ParamByName('idenderecointegracao').AsInteger := LId;
+    LQuery.ParamByName('flnatureza').AsInteger:= AObject.flnatureza;
+    LQuery.ParamByName('nmprimeiro').AsString:= AObject.nmprimeiro;
+    LQuery.ParamByName('nmsegundo').AsString:= AObject.nmsegundo;
+    LQuery.ParamByName('dsdocumento').AsString:= AObject.dsdocumento;
+    LQuery.ParamByName('dtregistro').AsDate:= AObject.dtregistro;
+    LQuery.ExecSQL;
+  finally
+    LQuery.Free;
+  end;
+end;
+end.

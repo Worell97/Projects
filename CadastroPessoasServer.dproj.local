@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/12/25 19:18:04.000.942,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\ServerConst1.pas</Transaction>
+    <Transaction>2022/12/25 19:18:04.000.812,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\WebModuleUnit1.pas</Transaction>
+    <Transaction>2022/12/25 19:22:33.000.032,C:\Users\worel\Documents\Embarcadero\Studio\Projects\WebModuleUnit1.dfm=C:\Users\worel\Documents\Embarcadero\Studio\Projects\WebModuleU.dfm</Transaction>
+    <Transaction>2022/12/25 19:22:33.000.032,C:\Users\worel\Documents\Embarcadero\Studio\Projects\WebModuleUnit1.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\WebModuleU.pas</Transaction>
+    <Transaction>2022/12/25 19:22:45.000.664,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\worel\Documents\Embarcadero\Studio\Projects\CadPessoas.dproj</Transaction>
+    <Transaction>2022/12/25 19:22:56.000.305,C:\Users\worel\Documents\Embarcadero\Studio\Projects\CadPessoas.dproj=C:\Users\worel\Documents\Embarcadero\Studio\Projects\CadPessoas.dproj</Transaction>
+    <Transaction>2022/12/25 19:23:13.000.426,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/25 19:23:26.000.598,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Objects\Unit1.pas</Transaction>
+    <Transaction>2022/12/25 19:29:38.000.930,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Objects\Unit1.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Objects\Pessoa.pas</Transaction>
+    <Transaction>2022/12/25 19:30:29.000.240,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/25 20:03:13.000.358,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/25 20:05:30.000.281,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Controller\ControllerPessoa.pas</Transaction>
+    <Transaction>2022/12/25 20:07:49.000.610,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DAO\Model.DAO.Pessoa.pas</Transaction>
+    <Transaction>2022/12/26 12:56:56.000.715,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/26 12:57:26.000.291,C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DTO\Model.DTO.Pessoa.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/26 12:58:43.000.886,C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DTO\DTO_Pessoa.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DTO\Model.DTO.Pessoa.pas</Transaction>
+    <Transaction>2022/12/26 13:00:26.000.573,C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DAO\DAO_Pessoa.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DAO\Model.DAO.Pessoa.pas</Transaction>
+    <Transaction>2022/12/27 13:07:01.000.123,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DTO\DTO_Endereco_Integracao.pas</Transaction>
+    <Transaction>2022/12/27 13:07:01.000.087,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DTO\DTO_Endereco.pas</Transaction>
+    <Transaction>2022/12/27 13:07:52.000.233,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DAO\DAO_Endereco.pas</Transaction>
+    <Transaction>2022/12/27 13:14:36.000.343,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\DAO\DAO_Endereco_Integracao.pas</Transaction>
+    <Transaction>2022/12/27 19:42:09.000.986,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/27 19:42:40.000.379,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\ThreadAtualizaEnderecos.pas</Transaction>
+    <Transaction>2022/12/28 10:02:39.000.537,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/28 10:03:20.000.725,C:\Users\worel\Documents\Embarcadero\Studio\Projects\JsonObjectIntegracao.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/28 10:09:23.000.925,C:\Users\worel\Documents\Embarcadero\Studio\Projects\src\Model\JsonObjectIntegracao.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\JsonObjectIntegracao.pas</Transaction>
+    <Transaction>2022/12/30 13:11:43.057,C:\Users\worel\Documents\Embarcadero\Studio\Projects\CadastroPessoasServer.dproj=C:\Users\worel\Documents\Embarcadero\Studio\Projects\CadPessoas.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

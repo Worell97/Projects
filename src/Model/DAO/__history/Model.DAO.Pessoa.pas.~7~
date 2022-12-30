@@ -1,0 +1,202 @@
+unit Model.DAO.Pessoa;
+
+interface
+uses
+  System.SysUtils,
+  Data.DB,
+  Model.DTO.Pessoa,
+  FireDAC.Comp.Client,
+  FireDAC.Stan.Param;
+type
+  TDaoClientes = class
+  strict private
+    const
+      Select: System.UnicodeString =
+          'SELECT ' +
+          '  codigo,'+
+          '  nome,'+
+          '  cidade,'+
+          '  uf '+
+          'FROM ' +
+          '  clientes';
+      Insert: System.UnicodeString =
+          'INSERT INTO clientes(' +
+          '  codigo,'+
+          '  nome,'+
+          '  cidade,'+
+          '  uf'+
+          'VALUES('+
+          '  :codigo,'+
+          '  :nome,'+
+          '  :cidade,'+
+          '  :uf)';
+      Update: System.UnicodeString =
+          'UPDATE ' +
+          ' clientes ' +
+          'SET ' +
+          '  nome = :nome, '+
+          '  cidade = :cidade, '+
+          '  uf = :uf '+
+          ' WHERE codigo = :codigo ';
+
+      Delete: System.UnicodeString =
+          'DELETE FROM clientes ' +
+          'WHERE ' +
+          '  codigo = :codigo';
+  private
+    FConnection: TFDConnection;
+    class procedure InternalLoad(var AQuery: TFDQuery; const AObject: TDtoCliente); static;
+    function GetNextID(AQuery: TFDQuery): System.Integer;
+  public
+      constructor Create(AConnection: TFDConnection);
+      procedure UnsafeSave(const AObject: TDtoCliente);
+      procedure Save(const AObject: TDtoCliente);
+      function Load   (const AObject: TDtoCliente; const ACodigo: System.Integer): Boolean;
+      function LoadListPorCidade  (const AObjectList: TDtoClientes; const ACidade: System.String): Boolean;
+      procedure UnSafeDelete (const ACodigo: System.Integer);
+      procedure SafeDelete (const ACodigo: System.Integer);
+  end;
+implementation
+  uses
+    System.TypInfo;
+{ TDaoClientes }
+
+constructor TDaoClientes.Create(AConnection: TFDConnection);
+begin
+  FConnection := AConnection;
+end;
+
+class procedure TDaoClientes.InternalLoad(var AQuery: TFDQuery;const AObject: TDtoCliente);
+begin
+  AObject.Codigo := AQuery.FieldByName('codigo').AsInteger;
+  AObject.nome := AQuery.FieldByName('nome').AsString;
+  AObject.cidade := AQuery.FieldByName('cidade').AsString;
+  AObject.uf := AQuery.FieldByName('uf').AsString;
+end;
+
+function TDaoClientes.Load(const AObject: TDtoCliente; const ACodigo: System.Integer): Boolean;
+const
+  CWhere =
+    ' WHERE ' +
+    '  codigo = :codigo';
+var
+  LQuery: TFDQuery;
+begin
+  Result := False;
+  if (ACodigo > 0) then
+  begin
+    LQuery := TFDQuery.Create(nil);
+    LQuery.Connection := FConnection;
+    LQuery.SQL.Add(Select+CWhere);
+    LQuery.ParamByName('codigo').AsInteger := ACodigo;
+    LQuery.Open;
+    Result := not(LQuery.IsEmpty);
+    if not(LQuery.IsEmpty) then
+      InternalLoad(LQuery, AObject);
+  end;
+end;
+
+function TDaoClientes.LoadListPorCidade(const AObjectList: TDtoClientes;
+  const ACidade: System.String): Boolean;
+const
+  CWhere =
+    ' WHERE ' +
+    '  cidade = :cidade ';
+var
+  LQuery: TFDQuery;
+  LObjectAux : TDtoCliente;
+begin
+  Result := False;
+  if (ACidade <> '') then
+  begin
+    LQuery := TFDQuery.Create(nil);
+    LQuery.Connection := FConnection;
+    LQuery.SQL.Add(Select+CWhere);
+    LQuery.ParamByName('cidade').AsString := ACidade;
+    LQuery.Open;
+    Result := not(LQuery.IsEmpty);
+    if not(LQuery.IsEmpty) then
+    LQuery.First;
+    while not(LQuery.Eof) do
+    begin
+      LObjectAux := TDtoCliente.Create;
+      InternalLoad(LQuery, LObjectAux);
+      AObjectList.Add(LObjectAux);
+      LQuery.Next;
+    end;
+  end;
+end;
+
+function TDaoClientes.GetNextID(AQuery: TFDQuery): System.Integer;
+begin
+  AQuery.SQL.Clear;
+  AQuery.Open('SELECT GEN_ID(GEN_ClientesS, 1) as ID FROM RDB$DATABASE;');
+  if not(AQuery.IsEmpty) then
+    Result := AQuery.FieldByName('ID').AsInteger
+  else
+    Result := 0;
+  AQuery.SQL.Clear;
+end;
+
+procedure TDaoClientes.SafeDelete(const ACodigo: System.Integer);
+begin
+  FConnection.StartTransaction;
+  try
+    UnSafeDelete(ACodigo);
+    FConnection.Commit;
+  except
+    FConnection.Rollback;
+    raise
+  end;
+end;
+
+procedure TDaoClientes.Save(const AObject: TDtoCliente);
+begin
+   FConnection.StartTransaction;
+   try
+      UnsafeSave(AObject);
+      FConnection.Commit;
+   except
+      FConnection.Rollback;
+      raise;
+   end;
+end;
+
+procedure TDaoClientes.UnSafeDelete(const ACodigo: System.Integer);
+var
+  LQuery: TFDQuery;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  LQuery.SQL.Add(Delete);
+  LQuery.ParamByName('codigo').AsInteger := ACodigo;
+  LQuery.ExecSQL;
+end;
+
+procedure TDaoClientes.UnsafeSave(const AObject: TDtoCliente);
+var
+  LQuery: TFDQuery;
+  LCodigo: System.Integer;
+begin
+  LQuery := TFDQuery.Create(nil);
+  LQuery.Connection := FConnection;
+  try
+    if (AObject.codigo <= 0) then
+    begin
+      LCodigo := GetNextID(LQuery);
+      LQuery.SQL.Add(Insert);
+    end else
+    begin
+      LCodigo := AObject.codigo;
+      LQuery.SQL.Add(Update);
+    end;
+    LQuery.ParamByName('codigo').AsInteger := LCodigo;
+    LQuery.ParamByName('nome').AsString := AObject.nome;
+    LQuery.ParamByName('cidade').AsString:= AObject.cidade;
+    LQuery.ParamByName('uf').AsString:= AObject.uf;
+    LQuery.ExecSQL;
+  finally
+    LQuery.Free;
+  end;
+end;
+end.

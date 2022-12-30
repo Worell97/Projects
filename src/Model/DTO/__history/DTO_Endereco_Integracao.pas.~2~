@@ -1,0 +1,92 @@
+unit DTO_Endereco_Integracao;
+
+interface
+uses
+  System.Generics.Collections, FireDAC.Comp.Client, SysUtils;
+type
+  TDtoEnderecoIntegracao = class;
+  TDtoEnderecoIntegracaos = class;
+  TDtoEnderecoIntegracao = class(TObject)
+  private
+    Fnmprimeiro: System.String;
+    Fdtregistro: System.TDate;
+    Fnmsegundo: System.String;
+    Fdsdocumento: System.String;
+    Fidpessoa: System.Integer;
+    Fflnatureza: System.Integer;
+    { private declarations }
+    procedure InternalClear();
+    procedure Setdsdocumento(const Value: System.String);
+    procedure Setdtregistro(const Value: System.TDate);
+    procedure Setflnatureza(const Value: System.Integer);
+    procedure Setidpessoa(const Value: System.Integer);
+    procedure Setnmprimeiro(const Value: System.String);
+    procedure Setnmsegundo(const Value: System.String);
+  public
+    constructor Create();
+    procedure Clear; inline;
+    property idpessoa: System.Integer read Fidpessoa write Setidpessoa;
+    property flnatureza: System.Integer read Fflnatureza write Setflnatureza;
+    property dsdocumento: System.String read Fdsdocumento write Setdsdocumento;
+    property nmprimeiro: System.String read Fnmprimeiro write Setnmprimeiro;
+    property nmsegundo: System.String  read Fnmsegundo write Setnmsegundo;
+    property dtregistro: System.TDate  read Fdtregistro write Setdtregistro;
+  end;
+  TDtoEnderecoIntegracaos = class(TObjectList<TDtoEnderecoIntegracao>)
+  end;
+implementation
+{ TDtoEnderecoIntegracao }
+
+procedure TDtoEnderecoIntegracao.Clear;
+begin
+  Self.InternalClear();
+end;
+
+constructor TDtoEnderecoIntegracao.Create();
+begin
+  Self.InternalClear();
+end;
+
+
+procedure TDtoEnderecoIntegracao.InternalClear;
+begin
+  Fidpessoa := 0;
+  Fnmprimeiro := '';
+  Fdtregistro := Now;
+  Fnmsegundo := '';
+  Fdsdocumento := '';
+  Fflnatureza := 0;
+end;
+
+
+procedure TDtoEnderecoIntegracao.Setdsdocumento(const Value: System.String);
+begin
+  Fdsdocumento := Value;
+end;
+
+procedure TDtoEnderecoIntegracao.Setdtregistro(const Value: System.TDate);
+begin
+  Fdtregistro := Value;
+end;
+
+procedure TDtoEnderecoIntegracao.Setflnatureza(const Value: System.Integer);
+begin
+  Fflnatureza := Value;
+end;
+
+procedure TDtoEnderecoIntegracao.Setidpessoa(const Value: System.Integer);
+begin
+  Fidpessoa := Value;
+end;
+
+procedure TDtoEnderecoIntegracao.Setnmprimeiro(const Value: System.String);
+begin
+  Fnmprimeiro := Value;
+end;
+
+procedure TDtoEnderecoIntegracao.Setnmsegundo(const Value: System.String);
+begin
+  Fnmsegundo := Value;
+end;
+
+end.

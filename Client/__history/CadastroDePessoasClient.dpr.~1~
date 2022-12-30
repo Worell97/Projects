@@ -1,0 +1,17 @@
+program CadastroDePessoas;
+
+uses
+  Vcl.Forms,
+  Pessoa in 'View\Pessoa.pas' {Form1},
+  Form_Pesquisa in 'View\Form_Pesquisa.pas' {FormPesquisa};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormPesquisa, FormPesquisa);
+  Application.CreateForm(TFormPesquisa, FormPesquisa);
+  Application.Run;
+end.

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/12/28 12:09:08.000.668,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/28 13:12:04.000.317,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\View\Pessoa.dfm=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2022/12/28 13:12:04.000.317,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\View\Pessoa.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/28 13:12:17.000.019,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\Project1.dproj=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2022/12/29 09:50:17.000.800,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\Unit1.pas</Transaction>
+    <Transaction>2022/12/29 09:50:26.000.023,=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\Unit2.pas</Transaction>
+    <Transaction>2022/12/29 09:52:11.000.237,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\Unit2.dfm=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\View\Form_Pesquisa.dfm</Transaction>
+    <Transaction>2022/12/29 09:52:11.000.237,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\Unit2.pas=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\View\Form_Pesquisa.pas</Transaction>
+    <Transaction>2022/12/30 12:25:21.517,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\CadastroDePessoas.dproj=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\Project1.dproj</Transaction>
+    <Transaction>2022/12/30 13:11:51.309,C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\CadastroDePessoasClient.dproj=C:\Users\worel\Documents\Embarcadero\Studio\Projects\Client\CadastroDePessoas.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

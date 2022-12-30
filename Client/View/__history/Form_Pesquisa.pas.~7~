@@ -1,0 +1,42 @@
+unit Form_Pesquisa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TFormPesquisa = class(TForm)
+    lblId: TLabel;
+    edId: TEdit;
+    btnConfirmar: TButton;
+  private
+    { Private declarations }
+    FIdPessoa: System.String;
+    function GetPessoa: System.String;
+    procedure SetPessoa(const Value: System.String);
+  public
+    { Public declarations }
+    property IdPessoa: System.String read GetPessoa write SetPessoa;
+
+  end;
+
+var
+  FormPesquisa: TFormPesquisa;
+
+implementation
+
+{$R *.dfm}
+
+function TFormPesquisa.GetPessoa: System.String;
+begin
+  result := FIdPessoa;
+end;
+
+procedure TFormPesquisa.SetPessoa(const Value: System.String);
+begin
+  FIdPessoa := Value;
+end;
+
+end.
